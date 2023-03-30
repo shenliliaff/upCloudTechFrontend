@@ -1,0 +1,128 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": {
+			"navigationBarTitleText": "uni-app",
+			"enablePullDownRefresh": true,
+			"app-plus": {
+				"pullToRefresh": {
+					"style": "circle",
+					"color": "#4845D9"
+				}
+			}
+		}
+	}, {
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },{
+		"path": "pages/deviceDetail/deviceDetail",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/editDevice/editDevice",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/addManager/addManager",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/devicePositionManagement/devicePositionManagement",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/secretKeyManagement/secretKeyManagement",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": true,
+			"app-plus": {
+				"pullToRefresh": {
+					"style": "circle",
+					"color": "#4845D9"
+				}
+			}
+		}
+
+	}, {
+		"path": "pages/secretKeyDetail/secretKeyDetail",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/addSecretKey/addSecretKey",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+	}, {
+		"path": "pages/openRecords/openRecords",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": true,
+			"app-plus": {
+				"pullToRefresh": {
+					"style": "circle",
+					"color": "#4845D9"
+				}
+			}
+		}
+	}, {
+		"path": "pages/unbinding/unbinding",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+	}, {
+		"path": "pages/sharePage/sharePage",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/editPlace/editPlace",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false
+		}
+
+	}    ,{
+            "path" : "pages/addPlace/addPlace",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"globalStyle": {
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	}
+}
