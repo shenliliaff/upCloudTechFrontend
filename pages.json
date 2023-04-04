@@ -114,6 +114,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/deviceDetail/psDeviceDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationStyle": "custom",

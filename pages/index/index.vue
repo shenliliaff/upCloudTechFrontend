@@ -234,11 +234,17 @@
 					})
 					return fasle
 				}
-				uni.setStorageSync('deviceSn', deviceSn)
-				uni.setStorageSync('deviceName', deviceName)
-				uni.navigateTo({
-					url: '/pages/deviceDetail/deviceDetail?locationId=' + locationId
-				})
+				if(this.venueId == 2){
+					uni.navigateTo({
+						url: '/pages/deviceDetail/psDeviceDetail?locationId=' + locationId
+					})
+				}else{
+					uni.setStorageSync('deviceSn', deviceSn)
+					uni.setStorageSync('deviceName', deviceName)
+					uni.navigateTo({
+						url: '/pages/deviceDetail/deviceDetail?locationId=' + locationId
+					})
+				}
 			}
 		}
 	}
