@@ -234,7 +234,8 @@
 					})
 					return fasle
 				}
-				if(this.venueId == 2){
+				// if(this.venueId == 2){
+				if(locationId == 8){
 					uni.navigateTo({
 						url: '/pages/deviceDetail/psDeviceDetail?locationId=' + locationId
 					})
