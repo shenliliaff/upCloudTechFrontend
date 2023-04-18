@@ -11,11 +11,11 @@
 				设备编号:56702
 			</view>
 			<view class="data-style">
-				<view :class="['data-style-item',{active:style === 1}]" @tap="style = 1">默认板式</view>
-				<view :class="['data-style-item',{active:style === 2}]" @tap="style = 2">轮播图片</view>
+				<view :class="['data-style-item',{active:style === '默认'}]" @tap="changeStyle('默认')">默认板式</view>
+				<view :class="['data-style-item',{active:style === '轮播'}]" @tap="changeStyle('轮播')">轮播图片</view>
 			</view>
 		</view>
-		<block v-if="style === 1">
+		<block v-if="style === '默认'">
 			<view class="device-records-box permission-box">
 				<view class="permission-item" @tap="pageToSingleImage">
 					<view class="item-left">背景图</view>
@@ -85,7 +85,7 @@
 			</view>
 		</block>
 		<!-- 轮播图 -->
-		<block v-if="style === 2">
+		<block v-if="style === '轮播'">
 			<view class="swiper-container">
 				<view class="picker-container" @click="pickerImage">
 					<view class="empty">
@@ -109,11 +109,11 @@
 	export default {
 		data() {
 			return {
-				deviceId: 0,
+				deviceSn: 0,
 				deviceName: '', // 设备名称
 				locationName: '', // 设备所处教室
 				locationId: '', // 教室id
-				style:2,
+				style:'默认',
 				sourceType:0,
 				test:'测试',
 				banners:[]
@@ -123,14 +123,31 @@
 			this.locationId = option.locationId
 		},
 		onShow() {
-			this.deviceId = uni.getStorageSync('deviceSn')
-			this.deviceName = uni.getStorageSync('deviceName')
+			// this.deviceSn = uni.getStorageSync('deviceSn');
+			this.deviceSn = 'test123456';
 			this.getDeviceDetailInfo()
 		},
 		methods: {
 			// 获取设备详情
 			getDeviceDetailInfo() {
-				console.log("获取设备详情")
+				let _this = this;
+				this.$request({
+					url: '/test/up-device-info/get-pad-device-Detail',
+					method: 'get',
+					data:{
+						deviceSn:this.deviceSn
+					}
+				}).then(res => {
+					if (res.code === 200) {
+						let data = res.data;
+						_this.style = data.style;
+					}else{
+						uni.showToast({
+							icon:'none',
+							title:res.msg
+						})
+					}
+				});
 			},
 			
 			pageToSingleImage(){
@@ -144,7 +161,10 @@
 					url: '/pages/index/index'
 				})
 			},
-			
+			changeStyle(style){
+				this.style = style;
+				this.saveInfo()
+			},
 			pageToSourceType(){
 				let _this = this;
 				uni.showActionSheet({
@@ -179,6 +199,36 @@
 			},
 			removeBanner(idx){
 				this.banners.splice(idx,1);
+			},
+			
+			saveInfo(){
+				let data = {
+					"deviceSn":this.deviceSn,
+					"type": this.style,
+					
+				};
+				this.$request({
+					url: '/test/up-device-info/update-device-img-info',
+					method: 'post',
+					data:data
+				}).then(res => {
+					if (res.code === 200) {
+						uni.showToast({
+							icon:'none',
+							title:'保存成功'
+						})
+					}else{
+						uni.showToast({
+							icon:'none',
+							title:'保存失败'
+						})
+					}
+				}).catch(err=>{
+					uni.showToast({
+						icon:'none',
+						title:'保存失败'
+					})
+				})
 			}
 		}
 	}

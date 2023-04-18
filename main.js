@@ -7,8 +7,9 @@ Vue.config.productionTip = false
 App.mpType = 'app'
 
 
-import { request } from './common/request/index.js'
+import { request,upload } from './common/request/index.js'
 Vue.prototype.$request = request
+Vue.prototype.$upload = upload
 
 
 const app = new Vue({

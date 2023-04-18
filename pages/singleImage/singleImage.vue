@@ -45,9 +45,15 @@
 			},
 			
 			pickerImage(){
+				let _this = this;
 				uni.chooseImage({
 					complete(res) {
-						console.log(res.tempFilePaths[0]);
+						const filePath = res.tempFilePaths[0];
+						_this.$upload({
+							url:'/test/upload/img',
+							filePath:filePath,
+							name:'bgImg'
+						})
 					}
 				})
 			},
