@@ -15,9 +15,16 @@
 				</view>
 			</view>
 			<view class="login-btn">
+				<!-- #ifdef MP-WEIXIN -->
 				<button class="login-btn" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber" type="primary">
 					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录
 				</button>
+				<!-- #endif -->
+				<!-- #ifdef H5 -->
+				<button class="login-btn" @click="onTestLogin" type="primary">
+					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录
+				</button>
+				<!-- #endif -->
 			</view>
 		</view>
 	</view>
@@ -50,8 +57,25 @@
 				}
 			},
 			
+			onTestLogin(){
+				//临时测试登录
+				const {token, phone, venue_id, venue_name} = {
+					token:'05kl9u5xncRaPFMaaIa1fWQpBGpau0t7Wp3AIp9dOC6srTrAr9p5IVAq2S23ATGa',
+					phone:'18301125620',
+					venue_id:'2',
+					venue_name:'北仑文化馆',
+				}
+				uni.setStorageSync('token', token)
+				uni.setStorageSync('username', phone)
+				uni.setStorageSync('venueId', venue_id)
+				uni.setStorageSync('venueName', venue_name)
+				uni.navigateTo({
+					url: '/pages/index/index'
+				})
+			},
 			// 手机号登录
 			loginHandler(code) {
+				
 				this.$request({
 					url: '/up-user/wx/login',
 					method: 'post',

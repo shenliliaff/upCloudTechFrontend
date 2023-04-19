@@ -236,7 +236,7 @@
 				}
 				if(this.venueId == 2){
 					uni.navigateTo({
-						url: '/pages/deviceDetail/psDeviceDetail?locationId=' + locationId
+						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + locationId+"&deviceName="+deviceName
 					})
 				}else{
 					uni.setStorageSync('deviceSn', deviceSn)

@@ -8,14 +8,14 @@
 		</view>
 		<view class="device-records-box permission-box">
 			<view class="device-title">
-				设备编号:56702
+				设备编号:{{deviceSn}}
 			</view>
 			<view class="data-style">
-				<view :class="['data-style-item',{active:style === '默认'}]" @tap="changeStyle('默认')">默认板式</view>
-				<view :class="['data-style-item',{active:style === '轮播'}]" @tap="changeStyle('轮播')">轮播图片</view>
+				<view :class="['data-style-item',{active:$store.state.type === '默认'}]" @tap="changeStyle('默认')">默认板式</view>
+				<view :class="['data-style-item',{active:$store.state.type === '轮播'}]" @tap="changeStyle('轮播')">轮播图片</view>
 			</view>
 		</view>
-		<block v-if="style === '默认'">
+		<block v-if="$store.state.type === '默认'">
 			<view class="device-records-box permission-box">
 				<view class="permission-item" @tap="pageToSingleImage">
 					<view class="item-left">背景图</view>
@@ -39,53 +39,63 @@
 				<view class="permission-item" @tap="pageToSourceType">
 					<view class="item-left">场地信息</view>
 					<view class="item-right">
-						<view>{{sourceType === 0?'自定义':'其他数据源'}}</view>
+						<view>{{$store.state.dataSourceType == 'Others'?'其他数据源':'自定义'}}</view>
 						<uni-icons type="forward" size="24"></uni-icons>
 					</view>
 				</view>
-				<block v-if="sourceType === 0">
+				<block v-if="$store.state.dataSourceType === 'selfDefine'">
 					<view class="permission-item" @tap="pageToInput(1)">
 						<view class="item-left">房间名称</view>
 						<view class="item-right">
-							<view>{{test}}</view>
+							<view>{{$store.state.name}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(2)">
 						<view class="item-left">房间面积</view>
 						<view class="item-right">
-							<view>{{test}}</view>
+							<view>{{$store.state.area}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(3)">
 						<view class="item-left">容纳人数</view>
 						<view class="item-right">
-							<view>{{test}}</view>
+							<view>{{$store.state.volume}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(4)">
 						<view class="item-left">简介</view>
 						<view class="item-right">
-							<view>{{test}}</view>
+							<view>{{$store.state.desc}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 				</block>
-				<block v-if="sourceType === 1">
+				<block v-if="$store.state.dataSourceType === 'Others'">
 					<view class="permission-item" @tap="pageToInput(5)">
 						<view class="item-left">数据源地址</view>
 						<view class="item-right">
-							<view>{{test}}</view>
+							<view>{{$store.state.dataSource}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 				</block>
 			</view>
 		</block>
+		
+		<view class="device-records-box permission-box">
+			<view class="permission-item" @tap="pageToInput(6)">
+				<view class="item-left">版本更新</view>
+				<view class="item-right">
+					<view>{{$store.state.versionCode}}</view>
+					<uni-icons type="forward" size="24"></uni-icons>
+				</view>
+			</view>
+		</view>
 		<!-- 轮播图 -->
-		<block v-if="style === '轮播'">
+		<block v-if="$store.state.type === '轮播'">
 			<view class="swiper-container">
 				<view class="picker-container" @click="pickerImage">
 					<view class="empty">
@@ -93,7 +103,7 @@
 						<view>添加图片</view>
 					</view>
 				</view>
-				<view class="banner-image" v-for="(img,idx) in banners">
+				<view class="banner-image" v-for="(img,idx) in $store.state.bannerImages">
 					<image @click="previewImage(idx)" class="image" mode="aspectFill" :src="img"></image>
 					<view class="delete" @tap="removeBanner(idx)">
 						<uni-icons type="clear" color="#F4483B" size="30"></uni-icons>
@@ -110,45 +120,32 @@
 		data() {
 			return {
 				deviceSn: 0,
+				locationId:'',
 				deviceName: '', // 设备名称
 				locationName: '', // 设备所处教室
-				locationId: '', // 教室id
-				style:'默认',
-				sourceType:0,
 				test:'测试',
 				banners:[]
 			}
 		},
 		onLoad(option) {
-			this.locationId = option.locationId
+			// #ifdef H5
+			//测试环境
+			this.deviceSn = 'test123456';
+			this.locationId = '10008';
+			// #endif
+			// #ifdef APP-PLUS
+			this.deviceSn = option.deviceSn;
+			this.locationId = option.locationId;
+			// #endif
+			this.deviceName = option.deviceName;
+			this.$store.commit("setDeviceSn",this.deviceSn);
+			this.$store.commit("setLocationId",this.locationId);
 		},
 		onShow() {
-			// this.deviceSn = uni.getStorageSync('deviceSn');
-			this.deviceSn = 'test123456';
-			this.getDeviceDetailInfo()
+			this.$store.dispatch("getDeviceDetailInfo");
 		},
 		methods: {
-			// 获取设备详情
-			getDeviceDetailInfo() {
-				let _this = this;
-				this.$request({
-					url: '/test/up-device-info/get-pad-device-Detail',
-					method: 'get',
-					data:{
-						deviceSn:this.deviceSn
-					}
-				}).then(res => {
-					if (res.code === 200) {
-						let data = res.data;
-						_this.style = data.style;
-					}else{
-						uni.showToast({
-							icon:'none',
-							title:res.msg
-						})
-					}
-				});
-			},
+			
 			
 			pageToSingleImage(){
 				uni.navigateTo({
@@ -162,74 +159,55 @@
 				})
 			},
 			changeStyle(style){
-				this.style = style;
-				this.saveInfo()
+				this.$store.commit('setType',style);
+				this.$store.dispatch('updateDeviceInfo');
 			},
 			pageToSourceType(){
 				let _this = this;
+				let vs = ['selfDefine','Others']
 				uni.showActionSheet({
 					itemList:[
 						"自定义",
 						"其他数据源"
 					],
 					success(res) {
-						_this.sourceType = res.tapIndex;
+						console.log(vs[res.tapIndex])
+						_this.$store.commit('setDataSourceType',vs[res.tapIndex]);
+						_this.$store.dispatch('updateDeviceInfo');
 					}
 				})
 			},
 			pageToInput(type){
 				uni.navigateTo({
-					url: "/pages/inputPage/inputPage?type=i"+type+"&deviceId="+this.deviceId
+					url: "/pages/inputPage/inputPage?type=i"+type
 				})
 			},
 			pickerImage(){
 				let _this = this;
 				uni.chooseImage({
 					complete(res) {
-						_this.banners.push(res.tempFilePaths[0])
+						// _this.banners.push(res.tempFilePaths[0])
+						let banners = _this.$store.state.bannerImages;
+						let url = 'https://img0.baidu.com/it/u=2289446283,2987162055&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800';
+						
+						banners.push(encodeURIComponent(url));
+						console.log(banners)
+						_this.$store.dispatch('updateDeviceInfo');
 					}
 				})
 			},
 			
 			previewImage(idx){
 				uni.previewImage({
-					urls:this.banners,
+					urls:_this.$store.state.bannerImages,
 					current:idx
 				})
 			},
 			removeBanner(idx){
-				this.banners.splice(idx,1);
+				let banners = _this.$store.state.bannerImages;
+				banners.splice(idx,1);
+				this.$store.dispatch('updateDeviceInfo');
 			},
-			
-			saveInfo(){
-				let data = {
-					"deviceSn":this.deviceSn,
-					"type": this.style,
-					
-				};
-				this.$request({
-					url: '/test/up-device-info/update-device-img-info',
-					method: 'post',
-					data:data
-				}).then(res => {
-					if (res.code === 200) {
-						uni.showToast({
-							icon:'none',
-							title:'保存成功'
-						})
-					}else{
-						uni.showToast({
-							icon:'none',
-							title:'保存失败'
-						})
-					}
-				}).catch(err=>{
-					uni.showToast({
-						icon:'none',
-						title:'保存失败'
-					})
-				})
-			}
 		}
 	}
 </script>
@@ -389,6 +367,7 @@
 					font-size: 32rpx;
 					font-weight: 500;
 					color: #333333;
+					flex-shrink: 0;
 				}
 		
 				.item-right {

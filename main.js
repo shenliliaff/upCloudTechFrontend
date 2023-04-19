@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 Vue.config.productionTip = false
-
+import store from './store'
 App.mpType = 'app'
 
 
@@ -13,6 +13,7 @@ Vue.prototype.$upload = upload
 
 
 const app = new Vue({
+	store,
     ...App
 })
 app.$mount()

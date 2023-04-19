@@ -25,43 +25,51 @@
 	export default {
 		data() {
 			return {
-				locationName: '', // 新增的教室名称
-				locationId: '', // 新增的教室id
-				deviceId: '', 
 				value: '' ,
 				type:'',
 				types:{
 					'i1':{
 						title:'房间名称',
 						maxLength:10,
-						key:''
+						key:'name',
+						storeSet:'setName',
 					},
 					'i2':{
 						title:'房间面积',
 						maxLength:10,
-						key:''
+						key:'area',
+						storeSet:'setArea',
 					},
 					'i3':{
 						title:'容纳人数',
 						maxLength:10,
-						key:''
+						key:'volume',
+						storeSet:'setVolume',
 					},
 					'i4':{
 						title:'简介',
 						maxLength:20,
-						key:''
+						key:'desc',
+						storeSet:'setDesc',
 					},
 					'i5':{
 						title:'数据源地址',
 						maxLength:100,
-						key:''
+						key:'dataSource',
+						storeSet:'setDataSource',
+					},
+					'i6':{
+						title:'版本号',
+						maxLength:5,
+						key:'versionCode',
+						storeSet:'setVersionCode',
 					}
 				}
 			}
 		},
 		onLoad(option) {
-			this.type = option.type
-			this.deviceId = option.deviceId
+			this.type = option.type;
+			this.value = this.$store.state[this.types[this.type].key]
 		},
 		methods: {
 			// 
@@ -75,26 +83,16 @@
 			},
 			
 			saveEdit() {
-				// this.$request({
-				// 	url: '/up-location-info/add-location',
-				// 	method: 'post',
-				// 	data: {
-				// 		creator: uni.getStorageSync('username'),
-				// 		locationName: this.locationName,
-				// 		venueId: this.venueId + ''
-				// 	}
-				// }).then(res => {
-				// 	if (res.code === 200) {
-				// 		uni.showToast({
-				// 			title: '保存成功！'
-				// 		})
-				// 		setTimeout(() => {
-				// 			uni.setStorageSync('locationId', res.data.id)
-				// 			uni.setStorageSync('locationName', res.data.locationName)
-				// 			this.goBack()
-				// 		}, 1500)
-				// 	}
-				// })
+				this.$store.commit(this.types[this.type].storeSet,this.value);
+				if(this.type === 'i5' || this.type === 'i6'){
+					this.$store.dispatch('updateDeviceInfo');
+				}else{
+					this.$store.dispatch('updateRoomInfo');
+				}
+				
+				setTimeout(function(){
+					uni.navigateBack();
+				},1500)
 			}
 		}
 	}
