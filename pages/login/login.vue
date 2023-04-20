@@ -60,10 +60,10 @@
 			onTestLogin(){
 				//临时测试登录
 				const {token, phone, venue_id, venue_name} = {
-					token:'05kl9u5xncRaPFMaaIa1fWQpBGpau0t7Wp3AIp9dOC6srTrAr9p5IVAq2S23ATGa',
+					token:'LCk802IocEoQDtwSmIbEH2xCuE25KLGAeiIF4W7QdPFZUFZjsRyikU2Xdncv5dHU',
 					phone:'18301125620',
-					venue_id:'2',
-					venue_name:'北仑文化馆',
+					venue_id:'10001',
+					venue_name:'彭山文化馆',
 				}
 				uni.setStorageSync('token', token)
 				uni.setStorageSync('username', phone)

@@ -17,17 +17,17 @@
 		</view>
 		<block v-if="$store.state.type === '默认'">
 			<view class="device-records-box permission-box">
-				<view class="permission-item" @tap="pageToSingleImage">
+				<view class="permission-item" @tap="pageToSingleImage('t1')">
 					<view class="item-left">背景图</view>
 					<view class="item-right">
 						<uni-icons type="forward" size="24"></uni-icons>
 					</view>
 				</view>
-				<view class="permission-item" @tap="pageToSingleImage">
+				<view class="permission-item" @tap="pageToSingleImage('t2')">
 					<view class="item-left">logo图</view>
 					<uni-icons type="forward" size="24"></uni-icons>
 				</view>
-				<view class="permission-item" @tap="pageToSingleImage">
+				<view class="permission-item" @tap="pageToSingleImage('t3')">
 					<view class="item-left">自定义区</view>
 					<view class="item-right">
 						<uni-icons type="forward" size="24"></uni-icons>
@@ -85,15 +85,6 @@
 			</view>
 		</block>
 		
-		<view class="device-records-box permission-box">
-			<view class="permission-item" @tap="pageToInput(6)">
-				<view class="item-left">版本更新</view>
-				<view class="item-right">
-					<view>{{$store.state.versionCode}}</view>
-					<uni-icons type="forward" size="24"></uni-icons>
-				</view>
-			</view>
-		</view>
 		<!-- 轮播图 -->
 		<block v-if="$store.state.type === '轮播'">
 			<view class="swiper-container">
@@ -103,7 +94,7 @@
 						<view>添加图片</view>
 					</view>
 				</view>
-				<view class="banner-image" v-for="(img,idx) in $store.state.bannerImages">
+				<view class="banner-image" v-for="(img,idx) in bannerImages">
 					<image @click="previewImage(idx)" class="image" mode="aspectFill" :src="img"></image>
 					<view class="delete" @tap="removeBanner(idx)">
 						<uni-icons type="clear" color="#F4483B" size="30"></uni-icons>
@@ -111,6 +102,16 @@
 				</view>
 			</view>
 		</block>
+		
+		<view class="device-records-box permission-box">
+			<view class="permission-item" @tap="pageToInput(6)">
+				<view class="item-left">版本号</view>
+				<view class="item-right">
+					<view>{{$store.state.versionCode}}</view>
+					<uni-icons type="forward" size="24"></uni-icons>
+				</view>
+			</view>
+		</view>
 		
 	</view>
 </template>
@@ -125,6 +126,15 @@
 				locationName: '', // 设备所处教室
 				test:'测试',
 				banners:[]
+			}
+		},
+		computed:{
+			bannerImages(){
+				let bannerImages = this.$store.state.bannerImages;
+				if(bannerImages && bannerImages.length >= 0){
+					return bannerImages.split(",");
+				}
+				return [];
 			}
 		},
 		onLoad(option) {
@@ -146,10 +156,9 @@
 		},
 		methods: {
 			
-			
-			pageToSingleImage(){
+			pageToSingleImage(t){
 				uni.navigateTo({
-					url:'/pages/singleImage/singleImage'
+					url:'/pages/singleImage/singleImage?type=' + t
 				})
 			},
 			// 返回
@@ -186,26 +195,45 @@
 				let _this = this;
 				uni.chooseImage({
 					complete(res) {
-						// _this.banners.push(res.tempFilePaths[0])
-						let banners = _this.$store.state.bannerImages;
-						let url = 'https://img0.baidu.com/it/u=2289446283,2987162055&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800';
+						const filePath = res.tempFilePaths[0];
+						uni.showLoading({
+							title:'上传中...'
+						});
+						_this.$upload({
+							url:'/test/upload/img',
+							filePath:filePath,
+							name:'file'
+						}).then(res=>{
+							let url = res.url;
+							let banners = [..._this.bannerImages,url].join(",");
+							_this.$store.commit('setBannerImages',banners);
+							_this.$store.dispatch('updateDeviceInfo');
+						}).catch(err=>{
+							console.log(err);
+							uni.showToast({
+								title:'上传失败',
+								icon:'error'
+							})
+						}).finally(res=>{
+							uni.hideLoading();
+						})
 						
-						banners.push(encodeURIComponent(url));
-						console.log(banners)
-						_this.$store.dispatch('updateDeviceInfo');
+					
+						
 					}
 				})
 			},
 			
 			previewImage(idx){
 				uni.previewImage({
-					urls:_this.$store.state.bannerImages,
+					urls:this.bannerImages,
 					current:idx
 				})
 			},
 			removeBanner(idx){
-				let banners = _this.$store.state.bannerImages;
+				let banners = this.bannerImages;
 				banners.splice(idx,1);
+				this.$store.commit('setBannerImages',banners.join(","));
 				this.$store.dispatch('updateDeviceInfo');
 			},
 		}

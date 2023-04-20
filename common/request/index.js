@@ -80,28 +80,16 @@ export function upload({
 			url:globals.api + url,
 			filePath:filePath,
 			name:name,
+			timeout:1000000,
 			success(res) {
-				console.log("上传回调")
-				let data = res.data || null
+				let data = JSON.parse(res.data || '{}')
 				if (data.code == 200) {
-					resolve(data)
+					resolve(data.data)
 				} else if (data.code === 301 || data.code === 302 || data.code === 303) {
 					uni.showToast({
 						title: '登录已过期',
 						icon: 'error'
 					})
-					// setTimeout(() => {
-					// 	uni.removeStorageSync('token')
-					// 	uni.removeStorageSync('username')
-					// 	uni.removeStorageSync('venueId')
-					// 	uni.removeStorageSync('locationId')
-					// 	uni.removeStorageSync('locationName')
-					// 	uni.removeStorageSync('deviceSn')
-					// 	uni.removeStorageSync('deviceName')
-					// 	uni.navigateTo({
-					// 		url: '/pages/login/login'
-					// 	})
-					// }, 1500)
 				} else if (data.code === 305) {
 					uni.showToast({
 						title: '手机号未注册！',

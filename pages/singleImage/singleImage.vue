@@ -3,18 +3,21 @@
 		<view class="statusBar-box">
 			<uni-icons type="back" size="30" @tap="goBack"></uni-icons>
 			<view class="page-title">
-				{{ pageTitle }}
+				{{ types[type].title }}
 			</view>
 		</view>
 		
 		<view class="device-records-box permission-box">
 			<view class="picker-container" @click="pickerImage">
-				<view class="empty">
+				<view class="empty" v-if="!image || image.length === 0">
 					<view class="plus-icon"></view>
 					<view>从相册中选择</view>
 				</view>
+				<view class="image-wrapper" v-if="image && image.length > 0">
+					<image class="image" mode="aspectFit" :src="image"></image>
+				</view>
 			</view>
-			<view class="tips">推荐尺寸：562 * 330</view>
+			<view class="tips">推荐尺寸：{{types[type].size}}</view>
 		</view>
 		
 		<view class="btn-box">
@@ -28,14 +31,36 @@
 	export default {
 		data() {
 			return {
-				pageTitle: '上传图片',
-				deviceId:'',
-				deviceName:'',
+				type:'t1',
+				types:{
+					't1':{
+						'title':'背景图',
+						'key':'bgImg',
+						'setKey':'setBgImg',
+						'size':'1920 * 1080'
+					},
+					't2':{
+						'title':'logo图片',
+						'setKey':'setLogo',
+						'key':'logo',
+						'size':'795 * 176'
+					},
+					't3':{
+						'title':'自定义区',
+						'setKey':'setSelfDefine',
+						'key':'selfDefine',
+						'size':'715 * 176'
+					},
+				}
 			};
 		},
-		onShow() {
-			this.deviceId = uni.getStorageSync('deviceSn')
-			this.deviceName = uni.getStorageSync('deviceName')
+		computed:{
+			image(){
+				return this.$store.state[this.types[this.type].key];
+			}
+		},
+		onLoad(options){
+			this.type = options.type
 		},
 		methods: {
 			
@@ -49,39 +74,35 @@
 				uni.chooseImage({
 					complete(res) {
 						const filePath = res.tempFilePaths[0];
+						uni.showLoading({
+							title:'上传中...'
+						});
 						_this.$upload({
 							url:'/test/upload/img',
 							filePath:filePath,
-							name:'bgImg'
+							name:'file'
+						}).then(res=>{
+							let url = res.url;
+							_this.$store.commit(_this.types[_this.type].setKey,url);
+							
+							console.log(res.url)
+						}).catch(err=>{
+							uni.showToast({
+								title:'上传失败',
+								icon:'error'
+							})
+						}).finally(res=>{
+							uni.hideLoading();
 						})
 					}
 				})
 			},
 			// 保存设备编辑
 			saveEdit() {
-				// this.$request({
-				// 	url: '/up-device-info/update-device-name-info',
-				// 	method: 'post',
-				// 	data: {
-				// 		deviceName: this.deviceName,
-				// 		deviceSn: this.deviceId
-				// 	}
-				// }).then(res => {
-				// 	if (res.code === 200) {
-				// 		uni.setStorageSync('deviceName', this.deviceName)
-				// 		uni.showToast({
-				// 			title: '编辑成功！'
-				// 		})
-				// 		setTimeout(() => {
-				// 			uni.navigateBack()
-				// 		}, 1500)
-				// 	} else {
-				// 		uni.showToast({
-				// 			title: data.msg,
-				// 			icon: 'error'
-				// 		})
-				// 	}
-				// })
+				this.$store.dispatch('updateDeviceInfo');
+				setTimeout(function(){
+					uni.navigateBack();
+				},1500)
 			}
 		}
 	}
@@ -113,6 +134,15 @@
 				font-size: 36rpx;
 				font-weight: 400;
 				color: #FFFFFF;
+			}
+		}
+		
+		.image-wrapper{
+			height: 100%;
+			width: 100%;
+			.image{
+				height: 100%;
+				width: 100%;
 			}
 		}
 	}

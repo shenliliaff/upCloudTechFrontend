@@ -48,7 +48,7 @@
 					},
 					'i4':{
 						title:'简介',
-						maxLength:20,
+						maxLength:30,
 						key:'desc',
 						storeSet:'setDesc',
 					},

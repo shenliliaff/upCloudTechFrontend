@@ -13,9 +13,9 @@ const store = new Vuex.Store({
 		"selfDefine": "",
 		"dataSourceType": "", 
 		"dataSource": "", 
-		"versionCode": "100", 
-		"bannerImages": [
-		] ,
+		"versionCode": "", 
+		"bannerImages": "" ,
+		"updateUrl":"https://upcloudtech.cn/resource/img/banpai.apk",
 		
 		"area": "", 
 		"volume": "", 
@@ -51,8 +51,12 @@ const store = new Vuex.Store({
 		setVersionCode(state,versionCode){
 			state.versionCode = versionCode;
 		},
+		setUpdateUrl(state,updateUrl){
+			state.updateUrl = updateUrl;
+		},
+		
 		setBannerImages(state,bannerImages){
-			state.bannerImages = bannerImages || [];
+			state.bannerImages = bannerImages;
 		},
 		
 		setArea(state,area){
@@ -78,7 +82,7 @@ const store = new Vuex.Store({
 		// 获取设备详情
 		getDeviceDetailInfo({state,commit}) {
 			request({
-				url: '/test/up-device-info/get-pad-device-Detail',
+				url: '/up-device-info/get-pad-device-Detail',
 				method: 'get',
 				data:{
 					deviceSn:state.deviceSn
@@ -95,7 +99,8 @@ const store = new Vuex.Store({
 					commit("setDataSource",data.dataSource);
 					
 					commit("setVersionCode",data.versionCode);
-					commit("setBannerImages",data.setBannerImages);
+					commit("setUpdateUrl",data.updateUrl);
+					commit("setBannerImages",data.bannerImages);
 					
 				}else{
 					uni.showToast({
@@ -105,7 +110,7 @@ const store = new Vuex.Store({
 				}
 			});
 			request({
-				url: '/test/up-location-info/get-location-detail',
+				url: '/up-location-info/get-location-detail',
 				method: 'get',
 				data:{
 					locationId:state.locationId
@@ -138,10 +143,11 @@ const store = new Vuex.Store({
 				"dataSourceType": state.dataSourceType,
 				"dataSource": state.dataSource,
 				"versionCode": state.versionCode,
+				"updateUrl": state.updateUrl,
 				"bannerImages": state.bannerImages
 			}
 			request({
-				url: '/test/up-device-info/update-device-img-info',
+				url: '/up-device-info/update-device-img-info',
 				method: 'POST',
 				data:data,
 			}).then(res => {
@@ -168,7 +174,7 @@ const store = new Vuex.Store({
 			  "desc":state.desc
 			}
 			request({
-				url: '/test/up-location-info/update-location-detail-info',
+				url: '/up-location-info/update-location-detail-info',
 				method: 'POST',
 				data:data,
 			}).then(res => {
