@@ -73,13 +73,14 @@ export function upload({
 		
 	}
 	if (token) {
-		//header.token = token
+		header.token = token
 	}
 	return new Promise((resolve, reject) => {
 		uni.uploadFile({
 			url:globals.api + url,
 			filePath:filePath,
 			name:name,
+			header:header,
 			timeout:1000000,
 			success(res) {
 				let data = JSON.parse(res.data || '{}')

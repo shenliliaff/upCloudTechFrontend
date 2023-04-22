@@ -143,7 +143,7 @@ const store = new Vuex.Store({
 				"dataSourceType": state.dataSourceType,
 				"dataSource": state.dataSource,
 				"versionCode": state.versionCode,
-				"updateUrl": state.updateUrl,
+				"updateUrl": 'https://upcloudtech.cn/resource/img/banpai.apk',
 				"bannerImages": state.bannerImages
 			}
 			request({

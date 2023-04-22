@@ -16,6 +16,9 @@
 				<view class="image-wrapper" v-if="image && image.length > 0">
 					<image class="image" mode="aspectFit" :src="image"></image>
 				</view>
+				<view class="delete" @tap.stop="remove" v-if="image && image.length > 0">
+					<uni-icons type="clear" color="#F4483B" size="30"></uni-icons>
+				</view>
 			</view>
 			<view class="tips">推荐尺寸：{{types[type].size}}</view>
 		</view>
@@ -78,7 +81,7 @@
 							title:'上传中...'
 						});
 						_this.$upload({
-							url:'/test/upload/img',
+							url:'/upload/img',
 							filePath:filePath,
 							name:'file'
 						}).then(res=>{
@@ -96,6 +99,9 @@
 						})
 					}
 				})
+			},
+			remove(){
+				this.$store.commit(this.types[this.type].setKey,'');
 			},
 			// 保存设备编辑
 			saveEdit() {
@@ -145,6 +151,13 @@
 				width: 100%;
 			}
 		}
+		.delete{
+			color: orangered;
+			position: absolute;
+			right: -30rpx;
+			top: -30rpx;
+			
+		}
 	}
 	
 	::v-deep .uniui-back {
@@ -159,6 +172,7 @@
 		margin-top: 100rpx;
 		margin-bottom: 50rpx;
 		border-radius: 12rpx;
+		position: relative;
 		
 		.empty{
 			display: flex;

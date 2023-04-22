@@ -43,41 +43,41 @@
 						<uni-icons type="forward" size="24"></uni-icons>
 					</view>
 				</view>
-				<block v-if="$store.state.dataSourceType === 'selfDefine'">
+				<block v-if="$store.state.dataSourceType === 'Others'">
 					<view class="permission-item" @tap="pageToInput(1)">
 						<view class="item-left">房间名称</view>
 						<view class="item-right">
-							<view>{{$store.state.name}}</view>
+							<view class="single-line">{{$store.state.name}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(2)">
 						<view class="item-left">房间面积</view>
 						<view class="item-right">
-							<view>{{$store.state.area}}</view>
+							<view class="single-line">{{$store.state.area}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(3)">
 						<view class="item-left">容纳人数</view>
 						<view class="item-right">
-							<view>{{$store.state.volume}}</view>
+							<view class="single-line">{{$store.state.volume}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(4)">
 						<view class="item-left">简介</view>
 						<view class="item-right">
-							<view>{{$store.state.desc}}</view>
+							<view class="single-line">{{$store.state.desc}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 				</block>
-				<block v-if="$store.state.dataSourceType === 'Others'">
+				<block v-if="$store.state.dataSourceType === 'selfDefine'">
 					<view class="permission-item" @tap="pageToInput(5)">
 						<view class="item-left">数据源地址</view>
 						<view class="item-right">
-							<view>{{$store.state.dataSource}}</view>
+							<view class="single-line">{{$store.state.dataSource}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
@@ -200,7 +200,7 @@
 							title:'上传中...'
 						});
 						_this.$upload({
-							url:'/test/upload/img',
+							url:'/upload/img',
 							filePath:filePath,
 							name:'file'
 						}).then(res=>{
@@ -217,8 +217,6 @@
 						}).finally(res=>{
 							uni.hideLoading();
 						})
-						
-					
 						
 					}
 				})
@@ -407,6 +405,14 @@
 		
 					.uni-icons {
 						margin-left: 20rpx;
+					}
+					
+					.single-line{
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
+						width: 350rpx;
+						text-align: right;
 					}
 				}
 		
