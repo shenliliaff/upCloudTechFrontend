@@ -13,9 +13,10 @@ const store = new Vuex.Store({
 		"selfDefine": "",
 		"dataSourceType": "", 
 		"dataSource": "", 
+		"otherUrl":"",
 		"versionCode": "", 
 		"bannerImages": "" ,
-		"updateUrl":"https://upcloudtech.cn/resource/img/banpai.apk",
+		"updateUrl":"",
 		
 		"area": "", 
 		"volume": "", 
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
 		setDataSource(state,dataSource){
 			state.dataSource = dataSource;
 		},
+		setOtherUrl(state,otherUrl){
+			state.otherUrl = otherUrl;
+		},
 		setVersionCode(state,versionCode){
 			state.versionCode = versionCode;
 		},
@@ -79,8 +83,31 @@ const store = new Vuex.Store({
 		},
     },
     actions: {
+		//清空
+		clearDeviceInfo({state,commit}){
+			commit("setType",'');
+			commit("setBgImg",'');
+			commit("setLogo",'');
+			commit("setSelfDefine",'');
+			
+			commit("setDataSourceType",'');
+			commit("setDataSource",'');
+			commit("setOtherUrl",'');
+			
+			commit("setVersionCode",'');
+			commit("setUpdateUrl",'');
+			commit("setBannerImages",'');
+			
+			commit("setArea",'');
+			commit("setDesc",'');
+			commit("setImage",'');
+			commit("setName",'');
+			commit("setVolume",'');
+		},
 		// 获取设备详情
-		getDeviceDetailInfo({state,commit}) {
+		getDeviceDetailInfo({state,commit,dispatch}) {
+			dispatch("clearDeviceInfo");
+			
 			request({
 				url: '/up-device-info/get-pad-device-Detail',
 				method: 'get',
@@ -97,6 +124,7 @@ const store = new Vuex.Store({
 					
 					commit("setDataSourceType",data.dataSourceType);
 					commit("setDataSource",data.dataSource);
+					commit("setOtherUrl",data.otherUrl);
 					
 					commit("setVersionCode",data.versionCode);
 					commit("setUpdateUrl",data.updateUrl);
@@ -113,7 +141,7 @@ const store = new Vuex.Store({
 				url: '/up-location-info/get-location-detail',
 				method: 'get',
 				data:{
-					locationId:state.locationId
+					deviceSn:state.deviceSn
 				}
 			}).then(res => {
 				if (res.code === 200) {
@@ -142,8 +170,9 @@ const store = new Vuex.Store({
 				"selfDefine": state.selfDefine,
 				"dataSourceType": state.dataSourceType,
 				"dataSource": state.dataSource,
+				"otherUrl": state.otherUrl,
 				"versionCode": state.versionCode,
-				"updateUrl": 'https://upcloudtech.cn/resource/img/banpai.apk',
+				"updateUrl": state.updateUrl,
 				"bannerImages": state.bannerImages
 			}
 			request({

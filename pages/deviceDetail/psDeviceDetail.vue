@@ -43,7 +43,7 @@
 						<uni-icons type="forward" size="24"></uni-icons>
 					</view>
 				</view>
-				<block v-if="$store.state.dataSourceType === 'Others'">
+				<block v-if="$store.state.dataSourceType === 'selfDefine'">
 					<view class="permission-item" @tap="pageToInput(1)">
 						<view class="item-left">房间名称</view>
 						<view class="item-right">
@@ -73,7 +73,7 @@
 						</view>
 					</view>
 				</block>
-				<block v-if="$store.state.dataSourceType === 'selfDefine'">
+				<block v-if="$store.state.dataSourceType === 'Others'">
 					<view class="permission-item" @tap="pageToInput(5)">
 						<view class="item-left">数据源地址</view>
 						<view class="item-right">
@@ -150,6 +150,9 @@
 			this.deviceName = option.deviceName;
 			this.$store.commit("setDeviceSn",this.deviceSn);
 			this.$store.commit("setLocationId",this.locationId);
+		},
+		onUnload() {
+			this.$store.dispatch("clearDeviceInfo");
 		},
 		onShow() {
 			this.$store.dispatch("getDeviceDetailInfo");
