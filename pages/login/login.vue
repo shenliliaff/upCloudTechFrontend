@@ -62,7 +62,7 @@
 				const {token, phone, venue_id, venue_name} = {
 					token:'LCk802IocEoQDtwSmIbEH2xCuE25KLGAeiIF4W7QdPFZUFZjsRyikU2Xdncv5dHU',
 					phone:'18301125620',
-					venue_id:'10001',
+					venue_id:10001,
 					venue_name:'彭山文化馆',
 				}
 				uni.setStorageSync('token', token)
