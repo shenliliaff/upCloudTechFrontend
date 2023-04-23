@@ -11,11 +11,11 @@
 				设备编号:{{deviceSn}}
 			</view>
 			<view class="data-style">
-				<view :class="['data-style-item',{active:$store.state.type === '默认'}]" @tap="changeStyle('默认')">默认板式</view>
-				<view :class="['data-style-item',{active:$store.state.type === '轮播'}]" @tap="changeStyle('轮播')">轮播图片</view>
+				<view :class="['data-style-item',{active:type === '默认'}]" @tap="changeStyle('默认')">默认板式</view>
+				<view :class="['data-style-item',{active:type === '轮播'}]" @tap="changeStyle('轮播')">轮播图片</view>
 			</view>
 		</view>
-		<block v-if="$store.state.type === '默认'">
+		<block v-if="type === '默认'">
 			<view class="device-records-box permission-box">
 				<view class="permission-item" @tap="pageToSingleImage('t1')">
 					<view class="item-left">背景图</view>
@@ -39,15 +39,15 @@
 				<view class="permission-item" @tap="pageToSourceType">
 					<view class="item-left">场地信息</view>
 					<view class="item-right">
-						<view>{{$store.state.dataSourceType == 'Others'?'其他数据源':'自定义'}}</view>
+						<view>{{dataSourceType == 'Others'?'其他数据源':'自定义'}}</view>
 						<uni-icons type="forward" size="24"></uni-icons>
 					</view>
 				</view>
-				<block v-if="$store.state.dataSourceType === 'selfDefine'">
+				<block v-if="dataSourceType === 'selfDefine'">
 					<view class="permission-item" @tap="pageToInput(1)">
 						<view class="item-left">房间名称</view>
 						<view class="item-right">
-							<view class="single-line">{{$store.state.name}}</view>
+							<view class="single-line">{{name}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
@@ -61,30 +61,30 @@
 					<view class="permission-item" @tap="pageToInput(2)">
 						<view class="item-left">房间面积</view>
 						<view class="item-right">
-							<view class="single-line">{{$store.state.area}}</view>
+							<view class="single-line">{{area}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(3)">
 						<view class="item-left">容纳人数</view>
 						<view class="item-right">
-							<view class="single-line">{{$store.state.volume}}</view>
+							<view class="single-line">{{volume}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 					<view class="permission-item" @tap="pageToInput(4)">
 						<view class="item-left">简介</view>
 						<view class="item-right">
-							<view class="single-line">{{$store.state.desc}}</view>
+							<view class="single-line">{{desc}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
 				</block>
-				<block v-if="$store.state.dataSourceType === 'Others'">
+				<block v-if="dataSourceType === 'Others'">
 					<view class="permission-item" @tap="pageToInput(5)">
 						<view class="item-left">数据源地址</view>
 						<view class="item-right">
-							<view class="single-line">{{$store.state.dataSource}}</view>
+							<view class="single-line">{{dataSource}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
@@ -93,7 +93,7 @@
 		</block>
 		
 		<!-- 轮播图 -->
-		<block v-if="$store.state.type === '轮播'">
+		<block v-if="type === '轮播'">
 			<view class="swiper-container">
 				<view class="picker-container" @click="pickerImage">
 					<view class="empty">
@@ -101,7 +101,7 @@
 						<view>添加图片</view>
 					</view>
 				</view>
-				<view class="banner-image" v-for="(img,idx) in bannerImages">
+				<view class="banner-image" v-for="(img,idx) in banners">
 					<image @click="previewImage(idx)" class="image" mode="aspectFill" :src="img"></image>
 					<view class="delete" @tap="removeBanner(idx)">
 						<uni-icons type="clear" color="#F4483B" size="30"></uni-icons>
@@ -114,30 +114,30 @@
 			<view class="permission-item" @tap="pageToInput(6)">
 				<view class="item-left">版本号</view>
 				<view class="item-right">
-					<view>{{$store.state.versionCode}}</view>
+					<view>{{versionCode}}</view>
 					<uni-icons type="forward" size="24"></uni-icons>
 				</view>
 			</view>
 		</view>
-		
 	</view>
 </template>
 
 <script>
+	import StoreMixins from "../../store/store_mixins.js";
+	
 	export default {
+		mixins:[StoreMixins],
 		data() {
 			return {
 				deviceSn: 0,
 				locationId:'',
 				deviceName: '', // 设备名称
 				locationName: '', // 设备所处教室
-				test:'测试',
-				banners:[]
 			}
 		},
 		computed:{
-			bannerImages(){
-				let bannerImages = this.$store.state.bannerImages;
+			banners(){
+				let bannerImages = this.bannerImages;
 				if(bannerImages && bannerImages.length >= 0){
 					return bannerImages.split(",");
 				}
@@ -151,12 +151,13 @@
 			this.deviceName = option.deviceName;
 			this.$store.commit("setDeviceSn",this.deviceSn);
 			this.$store.commit("setLocationId",this.locationId);
+			this.$store.dispatch("getDeviceDetailInfo");
 		},
 		onUnload() {
 			this.$store.dispatch("clearDeviceInfo");
 		},
 		onShow() {
-			this.$store.dispatch("getDeviceDetailInfo");
+			
 		},
 		methods: {
 			
@@ -167,9 +168,7 @@
 			},
 			// 返回
 			goBack() {
-				uni.navigateTo({
-					url: '/pages/index/index'
-				})
+				uni.navigateBack();
 			},
 			changeStyle(style){
 				this.$store.commit('setType',style);
@@ -228,12 +227,12 @@
 			
 			previewImage(idx){
 				uni.previewImage({
-					urls:this.bannerImages,
+					urls:this.banners,
 					current:idx
 				})
 			},
 			removeBanner(idx){
-				let banners = this.bannerImages;
+				let banners = this.banners;
 				banners.splice(idx,1);
 				this.$store.commit('setBannerImages',banners.join(","));
 				this.$store.dispatch('updateDeviceInfo');

@@ -169,7 +169,7 @@
 
 			// 获取场地设备
 			getLocationDevicesById() {
-				if(this.venueId === '10001'){
+				if(this.venueId == 10001){
 					this.$request({
 						url: '/up-location-info/get-pad-devices',
 						method: 'get',
@@ -267,7 +267,7 @@
 				if(this.venueId == '10001'){
 					let deviceInfo = device.deviceInfo;
 					uni.navigateTo({
-						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + this.locationId+"&deviceName="+deviceName
+						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + locationId+"&deviceName="+deviceName
 					})
 				}else{
 					uni.setStorageSync('deviceSn', deviceSn)
