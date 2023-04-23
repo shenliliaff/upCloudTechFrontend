@@ -208,7 +208,7 @@
 							name:'file'
 						}).then(res=>{
 							let url = res.url;
-							let banners = [..._this.bannerImages,url].join(",");
+							let banners = [..._this.banners,url].join(",");
 							_this.$store.commit('setBannerImages',banners);
 							_this.$store.dispatch('updateDeviceInfo');
 						}).catch(err=>{
