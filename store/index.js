@@ -200,7 +200,8 @@ const store = new Vuex.Store({
 			  "modifier": "",
 			  "area":state.area,
 			  "volume":state.volume,
-			  "desc":state.desc
+			  "desc":state.desc,
+			  "image":state.image,
 			}
 			request({
 				url: '/up-location-info/update-location-detail-info',

@@ -51,6 +51,13 @@
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>
+					<view class="permission-item" @tap="pageToSingleImage('t4')">
+						<view class="item-left">房间图片</view>
+						<view class="item-right">
+							<view class="single-line"></view>
+							<uni-icons type="forward" size="24"></uni-icons>
+						</view>
+					</view>
 					<view class="permission-item" @tap="pageToInput(2)">
 						<view class="item-left">房间面积</view>
 						<view class="item-right">
@@ -138,15 +145,9 @@
 			}
 		},
 		onLoad(option) {
-			// #ifdef H5
-			//测试环境
-			this.deviceSn = 'test123456';
-			this.locationId = '10008';
-			// #endif
-			// #ifdef APP-PLUS
+			
 			this.deviceSn = option.deviceSn;
 			this.locationId = option.locationId;
-			// #endif
 			this.deviceName = option.deviceName;
 			this.$store.commit("setDeviceSn",this.deviceSn);
 			this.$store.commit("setLocationId",this.locationId);

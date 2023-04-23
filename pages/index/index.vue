@@ -265,10 +265,9 @@
 					return fasle
 				}
 				if(this.venueId == '10001'){
-					console.log(device)
 					let deviceInfo = device.deviceInfo;
 					uni.navigateTo({
-						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceInfo.deviceSn + "&locationId=" + deviceInfo.locationId+"&deviceName="+deviceInfo.deviceName
+						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + this.locationId+"&deviceName="+deviceName
 					})
 				}else{
 					uni.setStorageSync('deviceSn', deviceSn)

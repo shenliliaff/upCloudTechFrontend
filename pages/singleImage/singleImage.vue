@@ -54,6 +54,12 @@
 						'key':'selfDefine',
 						'size':'715 * 176'
 					},
+					't4':{
+						'title':'房间图片',
+						'setKey':'setImage',
+						'key':'image',
+						'size':'593 * 381'
+					},
 				}
 			};
 		},
@@ -105,7 +111,12 @@
 			},
 			// 保存设备编辑
 			saveEdit() {
-				this.$store.dispatch('updateDeviceInfo');
+				if(this.type === 't4'){
+					this.$store.dispatch('updateRoomInfo');
+				}else{
+					this.$store.dispatch('updateDeviceInfo');
+				}
+				
 				setTimeout(function(){
 					uni.navigateBack();
 				},1500)
