@@ -267,6 +267,10 @@
 				if(this.venueId == '10001'){
 					let deviceInfo = device.deviceInfo;
 					uni.navigateTo({
+						url:'/pages/applyAppointment/applyAppointment'
+					})
+					return;
+					uni.navigateTo({
 						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + locationId+"&deviceName="+deviceName
 					})
 				}else{
