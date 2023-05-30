@@ -60,7 +60,7 @@
 			onTestLogin(){
 				//临时测试登录
 				const {token, phone, venue_id, venue_name} = {
-					token:'LCk802IocEoQDtwSmIbEH2xCuE25KLGAeiIF4W7QdPFZUFZjsRyikU2Xdncv5dHU',
+					token:'S4IuNhknh49kPUo0G1O6xtoE4jM4TsAMZc5mEqDzRPMzChTQl46eFzz05lbE2krK',
 					phone:'18301125620',
 					venue_id:10001,
 					venue_name:'彭山文化馆',
