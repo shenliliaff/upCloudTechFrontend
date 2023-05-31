@@ -84,7 +84,7 @@
 					<view class="permission-item" @tap="pageToInput(5)">
 						<view class="item-left">数据源地址</view>
 						<view class="item-right">
-							<view class="single-line">{{dataSource}}</view>
+							<view class="single-line">{{otherUrl}}</view>
 							<uni-icons type="forward" size="24"></uni-icons>
 						</view>
 					</view>

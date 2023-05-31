@@ -54,9 +54,9 @@
 					},
 					'i5':{
 						title:'数据源地址',
-						maxLength:100,
-						key:'dataSource',
-						storeSet:'setDataSource',
+						maxLength:200,
+						key:'otherUrl',
+						storeSet:'setOtherUrl',
 					},
 					'i6':{
 						title:'版本号',
