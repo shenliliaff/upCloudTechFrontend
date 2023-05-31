@@ -70,6 +70,7 @@
 </template>
 
 <script>
+	import globals from "../../static/config/index.js"
 	export default {
 		data() {
 			return {
@@ -169,7 +170,7 @@
 
 			// 获取场地设备
 			getLocationDevicesById() {
-				if(this.venueId == 10001){
+				if(this.venueId == globals.venueId){
 					this.$request({
 						url: '/up-location-info/get-pad-devices',
 						method: 'get',
@@ -264,7 +265,7 @@
 					})
 					return fasle
 				}
-				if(this.venueId == '10001'){
+				if(this.venueId == globals.venueId){
 					let deviceInfo = device.deviceInfo;
 					uni.navigateTo({
 						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + locationId+"&deviceName="+deviceName
