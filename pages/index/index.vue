@@ -31,7 +31,7 @@
 		<view class="device-list-wrap">
 			<view class="list-box" v-show="hasData">
 				<view class="list-item" v-for="d in deviceList" :key="d.device_sn"
-					@tap="pageToDeviceDetail(d.device_sn, d.device_name, d.location_id, d.isConnect)">
+					@tap="pageToDeviceDetail(d.device_sn, d.device_name, d.location_id, d.isConnect,d)">
 					
 					<view class="item-top">
 						<view class="device-name">
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+	import globals from "../../static/config/index.js"
 	export default {
 		data() {
 			return {
@@ -169,32 +170,62 @@
 
 			// 获取场地设备
 			getLocationDevicesById() {
-				this.$request({
-					url: '/up-location-info/get-devices',
-					method: 'get',
-					data: {
-						locationId: this.locationId,
-						venueId: this.venueId
-					}
-				}).then(res => {
-					if (res.code === 200) {
-						if (res.data && res.data.length > 0) {
-							this.deviceList = res.data
-							if (this.loading) {
-								this.loading = false
-								uni.stopPullDownRefresh()
-							}
-						} else {
-							this.deviceList = []
+				if(this.venueId == globals.venueId){
+					this.$request({
+						url: '/up-location-info/get-pad-devices',
+						method: 'get',
+						data: {
+							locationId: this.locationId,
+							venueId: this.venueId
 						}
-					}
-				}).catch(err => {
-					uni.showToast({
-						title: err.msg,
-						icon: 'error'
+					}).then(res => {
+						if (res.code === 200) {
+							if (res.data && res.data.length > 0) {
+								this.deviceList = res.data
+								if (this.loading) {
+									this.loading = false
+									uni.stopPullDownRefresh()
+								}
+							} else {
+								this.deviceList = []
+							}
+						}
+					}).catch(err => {
+						uni.showToast({
+							title: err.msg,
+							icon: 'error'
+						})
+						this.deviceList = []
 					})
-					this.deviceList = []
-				})
+				}else{
+					this.$request({
+						url: '/up-location-info/get-devices',
+						method: 'get',
+						data: {
+							locationId: this.locationId,
+							venueId: this.venueId
+						}
+					}).then(res => {
+						if (res.code === 200) {
+							if (res.data && res.data.length > 0) {
+								this.deviceList = res.data
+								if (this.loading) {
+									this.loading = false
+									uni.stopPullDownRefresh()
+								}
+							} else {
+								this.deviceList = []
+							}
+						}
+					}).catch(err => {
+						uni.showToast({
+							title: err.msg,
+							icon: 'error'
+						})
+						this.deviceList = []
+					})
+				}
+				
 			},
 
 			// 增加新场地
@@ -226,7 +257,7 @@
 				})
 			},
 			// 点击设备跳转设备详情页面
-			pageToDeviceDetail(deviceSn, deviceName, locationId, isConnect) {
+			pageToDeviceDetail(deviceSn, deviceName, locationId, isConnect,device) {
 				if (isConnect === '离线') {
 					uni.showToast({
 						title: '请检查设备状态',
@@ -234,11 +265,18 @@
 					})
 					return fasle
 				}
-				uni.setStorageSync('deviceSn', deviceSn)
-				uni.setStorageSync('deviceName', deviceName)
-				uni.navigateTo({
-					url: '/pages/deviceDetail/deviceDetail?locationId=' + locationId
-				})
+				if(this.venueId == globals.venueId){
+					let deviceInfo = device.deviceInfo;
+					uni.navigateTo({
+						url: '/pages/deviceDetail/psDeviceDetail?deviceSn=' + deviceSn + "&locationId=" + locationId+"&deviceName="+deviceName
+					})
+				}else{
+					uni.setStorageSync('deviceSn', deviceSn)
+					uni.setStorageSync('deviceName', deviceName)
+					uni.navigateTo({
+						url: '/pages/deviceDetail/deviceDetail?locationId=' + locationId
+					})
+				}
 			}
 		}
 	}

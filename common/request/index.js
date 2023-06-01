@@ -62,3 +62,55 @@ export function request({
 		})
 	})
 }
+
+export function upload({
+	url,
+	filePath,
+	name
+}) {
+	let token = uni.getStorageSync('token')
+	let header = {
+		
+	}
+	if (token) {
+		header.token = token
+	}
+	return new Promise((resolve, reject) => {
+		uni.uploadFile({
+			url:globals.api + url,
+			filePath:filePath,
+			name:name,
+			header:header,
+			timeout:1000000,
+			success(res) {
+				let data = JSON.parse(res.data || '{}')
+				if (data.code == 200) {
+					resolve(data.data)
+				} else if (data.code === 301 || data.code === 302 || data.code === 303) {
+					uni.showToast({
+						title: '登录已过期',
+						icon: 'error'
+					})
+				} else if (data.code === 305) {
+					uni.showToast({
+						title: '手机号未注册！',
+						icon: 'error'
+					})
+				} else {
+					reject(data)
+				}
+			},
+			fail(err) {
+				console.log(err)
+				uni.hideLoading()
+				uni.showModal({
+					title: '提示',
+					content: '网络断开...请稍后重试',
+					showCancel: false,
+					confirmColor: '#138FEA',
+					success: function(res) {}
+				})
+			}
+		})
+	})
+}
