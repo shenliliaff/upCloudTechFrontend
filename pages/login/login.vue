@@ -17,15 +17,31 @@
 			<view class="login-btn">
 				<!-- #ifdef MP-WEIXIN -->
 				<button class="login-btn" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber" type="primary">
-					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录
+					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录管理单位设备
 				</button>
 				<!-- #endif -->
 				<!-- #ifdef H5 -->
 				<button class="login-btn" @click="onTestLogin" type="primary">
-					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录
+					<image src="@/static/images/weixinIcon.png" mode="heightFix"></image>登录管理单位设备
 				</button>
 				<!-- #endif -->
 			</view>
+			<uni-popup ref="popusAuthorization" type="center" :maskClick="false">
+			<view class="contentview">
+			<view class="title">用户隐私提示</view>
+			<view class="des" @tap="openPrivacyContract">
+				感谢您使用本小程序，在使用前您应当阅读井同意当点击同意并继续时，
+				<uni-link class="link">隐私保护指引</uni-link>
+				即表示您已理解并同意该条款内容，该条款将对您产生法律约束力；如您不同意，将无法继续使用小程序相关功能。
+			</view>
+			<view class="btns">
+			<button class="item reject" @click="exitMiniProgram">拒绝</button>
+			<button id="agree-btn" class="item agree" open-type="agreePrivacyAuthorization"
+			@agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意</button>
+			</view>
+			</view>
+			</uni-popup>
+			<footer class="footer">本小程序提供单位内部(例如：学校、公共文化等)IoT设备等在线控制功能，用户账号由后台注册并提供，无法直接注册使用</footer>
 		</view>
 	</view>
 </template>
@@ -36,7 +52,23 @@
 		data() {
 			return {
 				code: '', // 登录code
+				privacyContractName:'',
 			}
+		},
+		onLoad(option){
+			// #ifdef MP-WEIXIN
+			wx.getPrivacySetting({
+				success: res => {
+				console.log("是否需要授权：", res.needAuthorization, "隐私协议的名称为：", res.privacyContractName)
+				if (res.needAuthorization) {
+					this.privacyContractName = res.privacyContractName;
+					this.$refs.popusAuthorization.open();
+				}
+			},
+				fail: () => {console.log('需要授权失败')},
+				complete: () => {},
+			})
+			// #endif
 		},
 		onBackPress(options) {
 		  // 触发返回就会调用此方法，这里实现的是禁用物理返回，顶部导航栏的自定义返回 uni.navigateBack 仍可使用
@@ -75,7 +107,6 @@
 			},
 			// 手机号登录
 			loginHandler(code) {
-				
 				this.$request({
 					url: '/up-user/wx/login',
 					method: 'post',
@@ -101,7 +132,25 @@
 				}).catch(err => {
 					console.log(err)
 				})
-			}
+			},
+			// 打开隐私协议页面
+			openPrivacyContract() {
+				let that = this;
+				wx.openPrivacyContract({
+				fail: () => {
+					that.$queue.showToast('遇到错误无法打开！');
+				}
+				})
+			},
+			// 拒绝隐私协议
+			exitMiniProgram() {
+				// 直接退出小程序
+				wx.exitMiniProgram()
+			},
+			// 同意隐私协议
+			handleAgreePrivacyAuthorization() {
+				this.$refs.popusAuthorization.close();
+			},
 		}
 	}
 </script>
@@ -195,5 +244,79 @@
 				margin-right: 19rpx;
 			}
 		}
+		
+		//下方是隐私弹框的样式
+		.privacy {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: rgba(0, 0, 0, .5);
+		z-index: 9999999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		}
+		.contentview {
+		width: 632rpx;
+		padding: 48rpx;
+		box-sizing: border-box;
+		background: #fff;
+		border-radius: 16rpx;
+		}
+		.contentview .title {
+		text-align: center;
+		color: #333;
+		font-weight: bold;
+		font-size: 32rpx;
+		}
+		.contentview .des {
+		font-size: 26rpx;
+		color: #666;
+		margin-top: 40rpx;
+		text-align: justify;
+		line-height: 1.6;
+		}
+		.contentview .des .link {
+		color: #07c160;
+		text-decoration: underline;
+		text-align: center;
+		}
+		button::after {
+		border: none;
+		}
+		.btns {
+		margin-top: 48rpx;
+		display: flex;
+		}
+		.btns .item {
+		justify-content: space-between;
+		width: 244rpx;
+		height: 80rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 16rpx;
+		box-sizing: border-box;
+		border: none;
+		}
+		.btns .reject {
+		background: #f4f4f5;
+		color: #909399;
+		}
+		.btns .agree {
+		background: #07c160;
+		color: #fff;
+		}
+		
+		.footer {
+		    position: absolute;
+		    bottom: 3px;
+		    width: 95%;
+		    height: 10%; /* footer的高度 */
+			font-style: italic;
+			font-size: 14px;
+		  }
 	}
 </style>

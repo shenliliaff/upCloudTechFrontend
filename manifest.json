@@ -50,6 +50,7 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         "appid" : "wxb04d22795ede2cc0",
+        "__usePrivacyCheck__" : true,
         "setting" : {
             "urlCheck" : false,
             "es6" : true,
